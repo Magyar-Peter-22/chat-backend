@@ -8,6 +8,8 @@ import session from "express-session";
 import cors from "cors";
 import MongoDBStore from 'connect-mongodb-session';
 
+const apiPath="/api";
+
 const production = process.env.NODE_ENV === "production";
 env.config();
 
@@ -26,6 +28,7 @@ const corsOptions = {
 };
 const io = new Server(server, {
   cors: corsOptions,
+  path: `${apiPath}/socket.io`
 });
 app.use(cors(corsOptions));
 
@@ -56,9 +59,9 @@ io.engine.use(sessionMiddleware);
 // Define rate limit rules
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minutes
-  max: 60, // Limit each IP to 60 requests per windowMs
+  max: 200, // Limit each IP to 60 requests per windowMs
   message: "Too many requests from this IP, please try again later."
 });
 app.use(limiter);
 
-export { app, server, io };
+export { app, server, io,apiPath };
