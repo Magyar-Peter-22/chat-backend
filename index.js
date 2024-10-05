@@ -13,7 +13,7 @@ ioRoutes(io);
 //server client
 app.use('/', (req, res) => {
   try {
-    console.log("serving client");
+    console.log(`serving client for "${req.url}"`);
     proxy.web(req, res, { target: process.env.CLIENT_URL })
   }
   catch (err) {
