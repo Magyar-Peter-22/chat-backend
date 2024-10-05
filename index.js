@@ -11,7 +11,15 @@ app.use(apiPath, appRoutes);
 ioRoutes(io);
 
 //server client
-app.use('/', (req, res) => { proxy.web(req, res, { target: 'http://localhost:3001' }) });
+app.use('/', (req, res) => {
+  try {
+    proxy.web(req, res, { target: process.env.CLIENT_URL })
+  }
+  catch (err) {
+    console.log("\nerror when serving client:\n");
+    console.error(err);
+  }
+});
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {

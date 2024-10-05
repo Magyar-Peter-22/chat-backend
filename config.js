@@ -59,7 +59,7 @@ io.engine.use(sessionMiddleware);
 // Define rate limit rules
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minutes
-  max: 200, // Limit each IP to 60 requests per windowMs
+  max: 600, // Limit each IP to 60 requests per windowMs
   message: "Too many requests from this IP, please try again later."
 });
 app.use(limiter);
