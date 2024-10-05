@@ -8,8 +8,6 @@ import session from "express-session";
 import cors from "cors";
 import MongoDBStore from 'connect-mongodb-session';
 
-const apiPath="/api";
-
 const production = process.env.NODE_ENV === "production";
 env.config();
 
@@ -23,12 +21,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //cors
 const corsOptions = {
-  origin: production ? process.env.CLIENT_URL : "http://localhost:3001",
+  origin: "*",
   credentials: true
 };
 const io = new Server(server, {
   cors: corsOptions,
-  path: `${apiPath}/socket.io`
 });
 app.use(cors(corsOptions));
 
@@ -64,4 +61,4 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-export { app, server, io,apiPath };
+export { app, server, io };
