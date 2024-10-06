@@ -7,8 +7,13 @@ async function Auth(socket, next) {
     let user = await findSessionUser(socket);
 
     //if the session has no user, create one
-    if (!user)
-        user = await CreateUser(socket);
+    //if (!user)
+    //    user = await CreateUser(socket);
+
+    if (!user) {
+        //auth failed, set user to false to show the login screen and disconnect
+        return next(new Error("401"));
+    }
 
     //add or overwrite the user in the session
     setUser(socket, user)

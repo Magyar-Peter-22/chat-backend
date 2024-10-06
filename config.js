@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //cors
 const corsOptions = {
-  origin: "*",
+  origin: production ? process.env.CLIENT_URL : "http://localhost:3001",
   credentials: true
 };
 const io = new Server(server, {
