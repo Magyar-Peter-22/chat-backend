@@ -16,7 +16,7 @@ async function Auth(socket, next) {
         const userData = await jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
 
         //get the user of the id
-        const user = findUser({ _id: userData._id })
+        const user = await findUser({ _id: userData._id })
 
         //if no user was found, the user id is invalid, auth again
         if (!user)
@@ -25,6 +25,7 @@ async function Auth(socket, next) {
         //everything is ok, store the user in the request object
         socket.request.user = user;
 
+        //send user to client
         socket.emit("auth", user);
 
         next();
