@@ -17,12 +17,10 @@ const server = http.createServer(app);
 
 //parse posts
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 //cors
 const corsOptions = {
   origin: production ? process.env.CLIENT_URL : "http://localhost:3001",
-  credentials: true
 };
 const io = new Server(server, {
   cors: corsOptions,
@@ -55,8 +53,8 @@ io.engine.use(sessionMiddleware);
 
 // Define rate limit rules
 const limiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minutes
-  max: 600, // Limit each IP to 60 requests per windowMs
+  windowMs: 10 * 1000, // 10s
+  max: 10,
   message: "Too many requests from this IP, please try again later."
 });
 app.use(limiter);

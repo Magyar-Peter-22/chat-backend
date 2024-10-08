@@ -11,7 +11,7 @@ export default (socket, io) => {
             //validate data
             const v = new Validator(
                 { username },
-                { username: 'required|string|maxLength:30' },
+                { username: 'required|username' },
             );
             await checkV(v);
 

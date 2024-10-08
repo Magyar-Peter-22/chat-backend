@@ -1,9 +1,13 @@
 import { app, server, io } from "./config.js";
 import appRoutes from "./app/routes.js";
 import ioRoutes from "./io/routes.js";
+import { expressErrorHandler } from "./app/expressErrorHandler.js";
+import "express-async-errors";
+import "./validations.js";
 
 //app routes
 app.use( appRoutes);
+app.use(expressErrorHandler);
 
 //io routes
 ioRoutes(io);

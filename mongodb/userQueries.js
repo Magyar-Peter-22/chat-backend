@@ -3,8 +3,8 @@ import "./connect.js";
 import { project } from './queryUtilities.js';
 
 const UserSchema = new Schema({
-    sessionId: String,
-    username: String
+    username: { type: String, required: true },
+    password_hash: { type: String, required: true }
 });
 
 const User = model("users", UserSchema);
@@ -35,10 +35,10 @@ async function changeName(id, username) {
 }
 
 //find user based on sessionId
-async function findUser(sessionId) {
-    const user = (await User.findOne({ sessionId }))?.toObject()??null;
+async function findUser(filters) {
+    const user = (await User.findOne(filters))?.toObject() ?? null;
     return project(userProjection, user);
 }
 
-export { changeName, createUser, findUser, userProjection };
+export { changeName, createUser, findUser, userProjection,User };
 

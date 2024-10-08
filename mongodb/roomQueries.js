@@ -2,11 +2,10 @@ import mongoose,{ model, Schema } from 'mongoose';
 import "./connect.js";
 
 const RoomSchema = new Schema({
-    userId: mongoose.ObjectId,
-    name: String,
-    timestamp: { type: Number, default: Date.now },
-    another: Number,
-    deleted: {type:Boolean,default:null}
+    userId: {type:mongoose.ObjectId,required:true},
+    name: {type:String,required:true},
+    timestamp: { type: Number, default: Date.now ,required:true},
+    deleted: {type:Boolean}
 });
 
 const validRoom = {

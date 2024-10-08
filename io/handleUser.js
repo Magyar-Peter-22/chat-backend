@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 
 const getUser = (socket) => {
-    return socket.request.session.user;
+    return socket.request.user;
 }
 
 const setUser = (socket, newUser) => {
-    socket.request.session.user = newUser;
+    socket.request.user = newUser;
 }
 
 function getRoom(socket) {

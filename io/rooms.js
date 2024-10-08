@@ -27,7 +27,7 @@ export default (socket, io) => {
             catch {
                 throw new Error("invalid room id");
             }
-            
+
             //check if the selected room is valid
             const { ok, message } = await isRoomValid(roomId);
             if (!ok)
@@ -40,7 +40,7 @@ export default (socket, io) => {
             callback(undefined);
         }
         catch (err) {
-            errorHandler(callback,err);
+            errorHandler(callback, err);
         }
     });
 
@@ -66,7 +66,7 @@ export default (socket, io) => {
 
             //create room in db
             try {
-                const created= await createRoom(newRoom);
+                const created = await createRoom(newRoom);
 
                 //success
                 console.log(`user "${user.username}" created a new room "${name}"`)
@@ -87,7 +87,7 @@ export default (socket, io) => {
             }
         }
         catch (err) {
-            errorHandler(callback,err);
+            errorHandler(callback, err);
         }
     });
 
@@ -109,7 +109,7 @@ export default (socket, io) => {
             }
         }
         catch (err) {
-            errorHandler(callback,err);
+            errorHandler(callback, err);
         }
     });
 };
@@ -131,13 +131,18 @@ function switchRoom(socket, room) {
 
 //load all rooms when the chat starts
 async function loadRooms(socket, next) {
-    //all rooms
-    const rooms = await getRooms();
-    const userId = getUser(socket)._id;
-    //does this user created his own room? the state of the create/delete button depends on this
-    const hasRoom = rooms.find(room => room.userId.equals(userId));
-    socket.emit("load rooms", { rooms, hasRoom });
-    next();
+    try {
+        //all rooms
+        const rooms = await getRooms();
+        const userId = getUser(socket)._id;
+        //does this user created his own room? the state of the create/delete button depends on this
+        const hasRoom = rooms.find(room => room.userId.equals(userId));
+        socket.emit("load rooms", { rooms, hasRoom });
+        next();
+    }
+    catch (err) {
+        next(err);
+    }
 }
 
 export { loadRooms };

@@ -4,10 +4,10 @@ import { aggregateOne } from './queryUtilities.js';
 import { userProjection } from './userQueries.js';
 
 const MessageSchema = new Schema({
-    userId: mongoose.ObjectId,
-    text: String,
-    timestamp: { type: Number, default: Date.now },
-    room: mongoose.ObjectId,
+    userId: {type:mongoose.ObjectId,required:true},
+    text: {type:String,required:true},
+    timestamp: { type: Number, default: Date.now,required:true },
+    room: {type:mongoose.ObjectId,required:true},
     pending: Boolean,
     media: Array
 });

@@ -1,46 +1,37 @@
-import { createUser, findUser } from "../mongodb/userQueries.js";
-import { setUser } from "./handleUser.js";
+import jwt from "jsonwebtoken";
+import { headersToAccessToken } from "../authentication.js";
+import { findUser } from "../mongodb/userQueries.js";
 
 //try to get the user of this cookie or create a new one
 async function Auth(socket, next) {
-    //find the user of this session id if exists
-    let user = await findSessionUser(socket);
+    try {
+        //get access token from the headers
+        const accessToken = headersToAccessToken(socket.handshake.headers);
 
-    //if the session has no user, create one
-    //if (!user)
-    //    user = await CreateUser(socket);
+        //auth if no token found
+        if (!accessToken)
+            throw new Error("no access token provided");
 
-    if (!user) {
-        //auth failed, set user to false to show the login screen and disconnect
-        return next(new Error("401"));
+        //decode the token and get the user id
+        const userData = await jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+
+        //get the user of the id
+        const user = findUser({ _id: userData._id })
+
+        //if no user was found, the user id is invalid, auth again
+        if (!user)
+            throw new Error("invalid data in access token");
+
+        //everything is ok, store the user in the request object
+        socket.request.user = user;
+
+        socket.emit("auth", user);
+
+        next();
     }
-
-    //add or overwrite the user in the session
-    setUser(socket, user)
-    const req = socket.request;
-    await req.session.save();
-
-    socket.emit("auth", user);
-    next();
-}
-
-
-//create a new user in the db and add it to the session
-async function CreateUser(socket) {
-    const req = socket.request;
-    const username = `New User ${Math.round(Math.random() * 100)}`;
-    const sessionId = req.session.id;
-    const user = { sessionId, username };
-
-    const created = await createUser(user);//mongodb adds the id to the object after creation
-    return created;
-}
-
-async function findSessionUser(socket) {
-    const req = socket.request;
-    const sessionId = req.session.id;
-    const user = await findUser(sessionId);
-    return user;
+    catch (err) {
+        return next(err);
+    }
 }
 
 export default Auth;
